@@ -1,33 +1,174 @@
 <!DOCTYPE html>
-<script>
-  document.onkeydown = function (event) {
-    var key_press = String.fromCharCode(event.keyCode)
-    var key_code = event.keyCode
-    document.getElementById('kp').innerHTML = key_press
-    document.getElementById('kc').innerHTML = key_code
-    var status = document.getElementById('status')
-    status.innerHTML = 'DOWN Event Fired For : ' + key_press
-    if (key_press == 'W') {
-      alert("Put script to run specific for 'W' key here")
-    } else if (key_press == 'A') {
-      alert("Put script to run specific for 'A' key here")
-    } else if (key_press == 'S') {
-      alert("Put script to run specific for 'S' key here")
-    } else if (key_press == 'D') {
-      alert("Put script to run specific for 'D' key here")
-    }
-  }
-  document.onkeyup = function (event) {
-    var key_press = String.fromCharCode(event.keyCode)
-    var status = document.getElementById('status')
-    status.innerHTML = 'UP Event Fired For : ' + key_press
-  }
-</script>
-<h2>Javascript Capture Keyboard Input Example</h2>
-<h3>onkeydown - onkeyup</h3>
-Key Pressed :
-<span id="kp"></span>
-<br />
-Key Code :
-<span id="kc"></span>
-<p id="status">Keyboard Event Status</p>
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <script
+      type="text/javascript"
+      src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"
+    ></script>
+
+    <script type="text/javascript" type="text/javascript">
+      // Connecting to ROS
+      // -----------------
+
+      var ros = new ROSLIB.Ros({
+        url: 'ws://localhost:9090',
+      })
+
+      ros.on('connection', function () {
+        console.log('Connected to websocket server.')
+      })
+
+      ros.on('error', function (error) {
+        console.log('Error connecting to websocket server: ', error)
+      })
+
+      ros.on('close', function () {
+        console.log('Connection to websocket server closed.')
+      })
+
+      // Publishing a Topic
+      // ------------------
+
+      var cmdVel = new ROSLIB.Topic({
+        ros: ros,
+        name: '/cmd_vel',
+        messageType: 'geometry_msgs/Twist',
+      })
+
+      var twist = new ROSLIB.Message({
+        linear: {
+          x: 0.1,
+          y: 0.2,
+          z: 0.3,
+        },
+        angular: {
+          x: -0.1,
+          y: -0.2,
+          z: -0.3,
+        },
+      })
+      cmdVel.publish(twist)
+
+      document.onkeydown = function (event) {
+        var key_press = String.fromCharCode(event.keyCode)
+        var key_code = event.keyCode
+        document.getElementById('kp').innerHTML = key_press
+        document.getElementById('kc').innerHTML = key_code
+        var status = document.getElementById('status')
+        status.innerHTML = 'DOWN Event Fired For : ' + key_press
+        if (key_press == 'W') {
+          forward()
+        } else if (key_press == 'A') {
+          left()
+        } else if (key_press == 'S') {
+          stop()
+        } else if (key_press == 'D') {
+          right()
+        } else if (key_press == 'X') {
+          backward()
+        }
+      }
+      document.onkeyup = function (event) {
+        var key_press = String.fromCharCode(event.keyCode)
+        var status = document.getElementById('status')
+        status.innerHTML = 'UP Event Fired For : ' + key_press
+      }
+
+      function forward() {
+        twist = new ROSLIB.Message({
+          linear: {
+            x: 0.5,
+            y: 0.0,
+            z: 0.0,
+          },
+          angular: {
+            x: -0.0,
+            y: -0.0,
+            z: -0.0,
+          },
+        })
+        cmdVel.publish(twist)
+      }
+
+      function backward() {
+        twist = new ROSLIB.Message({
+          linear: {
+            x: -0.5,
+            y: 0.0,
+            z: 0.0,
+          },
+          angular: {
+            x: -0.0,
+            y: -0.0,
+            z: -0.0,
+          },
+        })
+        cmdVel.publish(twist)
+      }
+
+      function left() {
+        twist = new ROSLIB.Message({
+          linear: {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+          },
+          angular: {
+            x: -0.0,
+            y: -0.0,
+            z: 1.0,
+          },
+        })
+        cmdVel.publish(twist)
+      }
+
+      function right() {
+        twist = new ROSLIB.Message({
+          linear: {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+          },
+          angular: {
+            x: -0.0,
+            y: -0.0,
+            z: -1.0,
+          },
+        })
+        cmdVel.publish(twist)
+      }
+
+      function stop() {
+        twist = new ROSLIB.Message({
+          linear: {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+          },
+          angular: {
+            x: -0.0,
+            y: -0.0,
+            z: -0.0,
+          },
+        })
+        cmdVel.publish(twist)
+      }
+    </script>
+  </head>
+  <body>
+    <h2>Javascript Capture Keyboard Input Example</h2>
+    <h3>onkeydown - onkeyup</h3>
+    Key Pressed :
+    <span id="kp"></span>
+    <br />
+    Key Code :
+    <span id="kc"></span>
+    <p id="status">Keyboard Event Status</p>
+  </body>
+</html>
