@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script>
+      let keys = {
+        w: false,
+        a: false,
+        s: false,
+        d: false,
+      }
+
+      addEventListener('keydown', (event) => {
+        if (event.key === 'w') {
+          keys.w = true
+        }
+        if (event.key === 'a') {
+          keys.a = true
+        }
+        if (event.key === 's') {
+          keys.s = true
+        }
+        if (event.key === 'd') {
+          keys.d = true
+        }
+
+        if (keys.a && keys.w) {
+          console.log('forward left')
+        } else if (keys.w && keys.s) {
+          console.log('forward right')
+        } else if (keys.s && keys.a) {
+          console.log('backward left')
+        } else if (keys.s && keys.d) {
+          console.log('backward right')
+        } else if (keys.w) {
+          console.log('forward')
+        } else if (keys.a) {
+          console.log('left')
+        } else if (keys.s) {
+          console.log('back')
+        } else if (keys.d) {
+          console.log('right')
+        }
+      })
+
+      addEventListener('keyup', (event) => {
+        if (event.key === 'w') {
+          keys.w = false
+        }
+        if (event.key === 'a') {
+          keys.a = false
+        }
+        if (event.key === 's') {
+          keys.s = false
+        }
+        if (event.key === 'd') {
+          keys.d = false
+        }
+      })
+    </script>
+  </head>
+  <body></body>
+</html>
